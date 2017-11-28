@@ -40,7 +40,9 @@ public:
 	void setInputs(int numOfinputs) {
 		this->numOfInputs = numOfinputs;
 	}
-
+	void initializeWeights(int n) {
+		weights = new std::vector<double>(n);
+	}
 	double getWeight(int n) const {
 		return (*weights)[n];
 	}

@@ -33,15 +33,21 @@ int main() {
 	int outPut = 10;
 	int hiddenLayers = 1;
 	int neuronPerLayer = 20;
-	int learRate = 0.01;
+	double learRate = 0.05;
 	int numE = 100;
 	double targeti[] = {0,0,0,0,0,0,0,0,0,1};
+	std::vector<double> targets{ 0,0,0,0,0,0,0,0,0,1 };
 	std::vector<std::string> imageName;
 	double a(50.0), b(28*28);
-	std::vector<std::vector<double>*> *InputValuOfPixels(nullptr);
 
-	//std::vector<std::vector<double>> *InputValuOfPixels(a, vector<double>(b));
-	std::string pathToImages = "i:/DigitsRecognitionBSC/Dataset/9/";
+	std::vector<std::vector<double>*> *InputValuOfPixels = new std::vector<std::vector<double>*>(50);
+
+	std::vector<double> *temp= new std::vector<double>(28*28);
+
+	std::string pathToImages = "I:/DigitsRecognitionBSC/Dataset/9/";
+
+	std::vector<std::vector<double>> ImageValuePixels;
+	std::vector<double> tempValue;
 
 	//ImageUtility im;
 	getFileFormDirectory(pathToImages,"*.png*",imageName);
@@ -51,20 +57,37 @@ int main() {
 	int c = 0;
 	while (begin != end)
 	{
-		Mat imgtemp = imread(pathToImages + imageName[c], CV_LOAD_IMAGE_GRAYSCALE);
+		Mat imgtemp = imread(pathToImages + imageName[c]);
+		cvtColor(imgtemp, imgtemp, CV_RGB2GRAY);
+		//double a = imgtemp.at<uchar>(1, 1);
+		//std::clog << "a: " << a << "\n";
+		int temC = 0;
 		for (int i = 0; i < imgtemp.cols;i++) {
 			for (int j = 0; j < imgtemp.rows;j++) {
-				(*InputValuOfPixels)[c]->push_back(imgtemp.at<uchar>(i, j));
+				//(*InputValuOfPixels2)->push_back(imgtemp.at<uchar>(i, j));
+				tempValue.push_back((imgtemp.at<uchar>(i, j) / 255));
+				//(*temp)[temC] = (imgtemp.at<uchar>(i, j)/255);
+				temC++;
 			}
 		}
+
+		ImageValuePixels.push_back(tempValue);
+		tempValue.clear();
+
 		begin++;
 		c++;
 	}
 
+	//InputValuOfPixels = &ImageValuePixels;
 
-	NeuralNet networks(inputs, outPut,hiddenLayers, neuronPerLayer,learRate,numE);
+	for (int i = 0; i<50;i++) {
+		(*InputValuOfPixels)[i] = &ImageValuePixels[i];
+	}
 
-	networks.training(100,InputValuOfPixels,targeti);
+
+	NeuralNet networks(inputs, outPut,hiddenLayers, neuronPerLayer,learRate,numE,1);
+
+	networks.training(100,InputValuOfPixels,targets);
 
 
 }

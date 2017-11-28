@@ -25,7 +25,7 @@ public:
 
 	void creatNeuron(int numN, int inpurPN) {
 		neurons = new vector<Neuron*>(numN);
-		for (int i = 0; i, numN; i++) {
+		for (int i = 0; i<numN; i++) {
 			(*neurons)[i] = new Neuron(inpurPN);
 		}
 	}
